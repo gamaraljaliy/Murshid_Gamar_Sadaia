@@ -19,6 +19,31 @@ The core notebook checks three expected answers, checks the result fields, and c
 
 This stage uses Python's standard library only: no hosted API, authentication token or real inference model.
 
+## Day 2 core: structured tickets and read-only status
+
+Day 2 extends the same cumulative notebook with Cells 4–6. It uses synthetic records only:
+
+- `REF-1001` belongs to `demo-user-1` and has status `under_review`.
+- `REF-1002` belongs to `demo-user-2` and has status `approved`.
+- `REF-9999` does not exist.
+
+The demo uses `SESSION = 'demo-user-1'` as a test identity supplied separately from the question. This is **not** real authentication.
+
+1. `extract_ticket(question)` finds the reference and converts the question to a structured dictionary containing `service`, `city`, `request_id`, and `needs_clarification`.
+2. `validate_ticket(ticket)` checks the exact fields, accepted values, reference format, Boolean type, and consistency of the clarification flag.
+3. `route(question, session)` refuses cancellation requests, invalid tickets and incomplete status requests without calling the status tool.
+4. `check_status(request_id, session)` looks up the record and checks its owner before returning the status.
+
+For the reference question `ما حالة طلبي REF-1001 في الرياض؟`, the ticket specifies `application_status`, `Riyadh`, `REF-1001` and `needs_clarification=False`; the returned status is `under_review`.
+
+### Tests and review
+
+The five recorded case codes are `under_review`, `needs_clarification`, `not_found`, `unsupported_action` and `access_denied`. The corresponding status-tool call counts are `[1, 0, 1, 0, 1]`. The tests also verify that `REF-1002` does not expose its real status to the demo user, that a Day 1 FAQ still works, and that `RECORDS == INITIAL_RECORDS`.
+
+**Issue corrected during review:** The earlier saved notebook had an unnumbered first cell despite showing its output. After rerunning the notebook and saving it again, all six cells have execution counts (11–16). This corrected the saved execution evidence without changing the program logic or weakening the tests.
+
+**Limitation:** The records and user identity are fictional. Error codes in the JSON results are for classroom inspection; real status services need stronger authentication, authorization, logging and privacy controls.
+
 ## Day 1 homework: real model
 
 The homework uses `google/flan-t5-small` with a pinned model revision and runs inference on CPU. The notebook follows this sequence:
@@ -49,8 +74,8 @@ A non-empty generated answer is a successful execution check, not proof of corre
 
 - **Core:** run `notebooks/murshid.ipynb` top-to-bottom using Python 3.9+ in Colab.
 - **Homework:** run `homework/day1_real_model.ipynb` top-to-bottom in a separate Colab Python 3 CPU runtime with internet access to download dependencies and model files.
-- **Saved outputs:** `results/core/baseline_results.json` and `results/day1/live_demo_result.json`.
+- **Saved outputs:** `results/core/baseline_results.json`, `results/core/day2_results.json`, and `results/day1/live_demo_result.json`.
 
 ## Limitations and next steps
 
-This is a teaching exercise using a small synthetic example. It does not test broad factual accuracy, Arabic performance or production readiness. The core workflow is still mock-based after Day 1. Future core lab stages and optional homework will be added only when completed.
+This is a teaching exercise using a small synthetic example. It does not test broad factual accuracy, Arabic performance or production readiness. The core still uses a mock client and a local read-only status tool after Day 2. Future core stages and optional homework will be added only when completed.
