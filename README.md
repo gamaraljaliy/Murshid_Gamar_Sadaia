@@ -10,12 +10,19 @@ A small service-assistant project built for **LLM Application Engineering (SDA-A
 - Tested three service questions and checked that an empty question does not call the client.
 - Saved the baseline results as JSON. The recorded checks passed.
 
+**Core project — Day 2: Structured tickets and status lookup**
+- Extracted a structured ticket with service, city, reference number and clarification flag.
+- Validated ticket fields before calling a read-only local status tool.
+- Checked demo record ownership and rejected unsupported cancellation requests.
+- Tested five scenarios and confirmed that Day 1 behavior still works and records remain unchanged.
+- Saved [Day 2 results](results/core/day2_results.json); the recorded checks passed.
+
 **Optional homework — Day 1: Real-model demo**
 - Ran `google/flan-t5-small` locally in a separate Google Colab CPU runtime.
 - Passed synthetic context and a question to the model, generated an answer, and saved the report.
 - Reviewed the answer for unsupported claims.
 
-Days 2–4 will be added as they are completed.
+Days 3–4 and their optional homework will be added as they are completed.
 
 ## Repository structure
 
@@ -40,9 +47,16 @@ murshid-mini/
 1. Open [notebooks/murshid.ipynb](notebooks/murshid.ipynb) in Google Colab.
 2. Select a Python 3 runtime (Python 3.9 or newer).
 3. Run the cells in order.
-4. Check the printed `"checks": "passed"` message and review [baseline_results.json](results/core/baseline_results.json).
+4. Check that Day 1 and Day 2 both print `"checks": "passed"`.
+5. Review [Day 1 baseline results](results/core/baseline_results.json) and [Day 2 results](results/core/day2_results.json).
 
-The core Day 1 lab uses only Python's standard library. It does not download a model or call an external API.
+The core Days 1–2 use only Python's standard library. The status tool looks up fictional in-memory records; there is no real database, external API or model download.
+
+## Day 2 verification
+
+The core notebook checks these cases: an owned reference (`under_review`), a missing reference number (`needs_clarification`), an absent record (`not_found`), a cancellation request (`unsupported_action`), and an unowned reference (`access_denied`).
+
+The recorded `tool_calls` values are `[1, 0, 1, 0, 1]`. The tests also check that the synthetic data is unchanged and that a Day 1 FAQ still works.
 
 ## Run the Day 1 homework
 
