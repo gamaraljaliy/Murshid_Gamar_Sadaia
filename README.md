@@ -22,20 +22,28 @@ A small service-assistant project built for **LLM Application Engineering (SDA-A
 - Passed synthetic context and a question to the model, generated an answer, and saved the report.
 - Reviewed the answer for unsupported claims.
 
+**Optional homework — Day 2: Controlled tool calls**
+- Built a `dispatch(call, trusted_user)` function with strict call and argument validation.
+- Allowed only the read-only `check_status` tool and checked record ownership using a separate demo identity.
+- Tested seven valid and invalid cases; all seven checks passed and the synthetic records remained unchanged.
+- Saved the complete seven-case report in [the Day 2 homework notebook](homework/day2_tools.ipynb).
+
 Days 3–4 and their optional homework will be added as they are completed.
 
 ## Repository structure
 
 ```text
-murshid-mini/
+Murshid_Gamar_Sadaia/
 ├── README.md
 ├── notebooks/
 │   └── murshid.ipynb
 ├── homework/
-│   └── day1_real_model.ipynb
+│   ├── day1_real_model.ipynb
+│   └── day2_tools.ipynb
 ├── results/
 │   ├── core/
-│   │   └── baseline_results.json
+│   │   ├── baseline_results.json
+│   │   └── day2_results.json
 │   └── day1/
 │       └── live_demo_result.json
 └── docs/
@@ -56,7 +64,15 @@ The core Days 1–2 use only Python's standard library. The status tool looks up
 
 The core notebook checks these cases: an owned reference (`under_review`), a missing reference number (`needs_clarification`), an absent record (`not_found`), a cancellation request (`unsupported_action`), and an unowned reference (`access_denied`).
 
-The recorded `tool_calls` values are `[1, 0, 1, 0, 1]`. The tests also check that the synthetic data is unchanged and that a Day 1 FAQ still works.
+The recorded `tool_calls` values are `[1, 0, 1, 0, 1]`. The tests also check that the synthetic data is unchanged and that a Day 1 FAQ still works. An added negative test verifies that a ticket with a string instead of a Boolean flag is rejected before a status-tool call.
+
+## Run the Day 2 homework
+
+1. Open [homework/day2_tools.ipynb](homework/day2_tools.ipynb) in a separate Google Colab Python 3/CPU runtime.
+2. Run its three code cells in order. No package installation, model download or API key is required.
+3. Confirm that the saved output reports `"passed": 7`, `"total": 7`, `"records_unchanged": true`, and seven individual cases with `"passed": true`.
+
+The structured tool calls in this homework are simulated test objects; no language model selects tools. **Validation** rejects malformed inputs and disallowed tool names, while **authorization** checks record ownership using a separately supplied demo identity.
 
 ## Run the Day 1 homework
 
