@@ -1,0 +1,63 @@
+{
+  "total": 8,
+  "passed": 8,
+  "records_unchanged": true,
+  "cases": [
+    {
+      "test_name": "valid_ticket",
+      "expected_code": "under_review",
+      "actual_code": "under_review",
+      "tool_calls": 1,
+      "passed": true
+    },
+    {
+      "test_name": "wrong_boolean_type",
+      "expected_code": "invalid_schema",
+      "actual_code": "invalid_schema",
+      "tool_calls": 0,
+      "passed": true
+    },
+    {
+      "test_name": "invalid_city",
+      "expected_code": "invalid_schema",
+      "actual_code": "invalid_schema",
+      "tool_calls": 0,
+      "passed": true
+    },
+    {
+      "test_name": "invalid_reference",
+      "expected_code": "invalid_schema",
+      "actual_code": "invalid_schema",
+      "tool_calls": 0,
+      "passed": true
+    },
+    {
+      "test_name": "unexpected_field",
+      "expected_code": "invalid_schema",
+      "actual_code": "invalid_schema",
+      "tool_calls": 0,
+      "passed": true
+    },
+    {
+      "test_name": "missing_field",
+      "expected_code": "invalid_schema",
+      "actual_code": "invalid_schema",
+      "tool_calls": 0,
+      "passed": true
+    },
+    {
+      "test_name": "inconsistent_clarification",
+      "expected_code": "invalid_schema",
+      "actual_code": "invalid_schema",
+      "tool_calls": 0,
+      "passed": true
+    },
+    {
+      "test_name": "valid_clarification",
+      "expected_code": "needs_clarification",
+      "actual_code": "needs_clarification",
+      "tool_calls": 0,
+      "passed": true
+    }
+  ]
+}
