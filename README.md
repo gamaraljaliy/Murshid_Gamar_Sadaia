@@ -1,115 +1,102 @@
 # Murshid Mini
 
-A small service-assistant project built for **LLM Application Engineering (SDA-AIE-213)**. The project starts with a predictable mock client and progresses through the four-day course. All examples use fictional service information.
+A small, testable service-assistant project built as part of **LLM Application Engineering (SDA-AIE-213)**.
 
-## Current progress
+## Project Overview
 
-**Core project — Day 1: Foundations**
-- Built an Arabic/English service directory and a `FakeClient` with predefined responses.
-- Added an `ask(question)` function with input validation, a trace ID, model name and latency.
-- Tested three service questions and checked that an empty question does not call the client.
-- Saved the baseline results as JSON. The recorded checks passed.
+Murshid Mini explores how to build reliable application workflows around language-model-style interactions. It begins with a predictable `FakeClient` and extends into structured ticket extraction, schema validation, a controlled read-only status lookup, and ownership checks.
 
-**Core project — Day 2: Structured tickets and status lookup**
-- Extracted a structured ticket with service, city, reference number and clarification flag.
-- Validated ticket fields before calling a read-only local status tool.
-- Checked demo record ownership and rejected unsupported cancellation requests.
-- Tested five scenarios and confirmed that Day 1 behavior still works and records remain unchanged.
-- Saved [Day 2 results](results/core/day2_results.json); the recorded checks passed.
+The core work lives in **one cumulative notebook** (`notebooks/murshid.ipynb`) for the four-day course. Optional homework is kept in separate notebooks. **Days 1 and 2 are complete; Days 3 and 4 are not yet included.**
 
-**Optional homework — Day 1: Real-model demo**
-- Ran `google/flan-t5-small` locally in a separate Google Colab CPU runtime.
-- Passed synthetic context and a question to the model, generated an answer, and saved the report.
-- Reviewed the answer for unsupported claims.
+The core uses fictional service information and records. It does not connect to a real government system, database, or hosted LLM API.
 
-**Optional homework — Day 2: Controlled tool calls**
-- Built a `dispatch(call, trusted_user)` function with strict call and argument validation.
-- Allowed only the read-only `check_status` tool and checked record ownership using a separate demo identity.
-- Tested seven valid and invalid cases; all seven checks passed and the synthetic records remained unchanged.
-- Saved the complete seven-case report in [the Day 2 homework notebook](homework/day2_tools.ipynb).
+## What I've Built
 
-Days 3–4 and their optional homework will be added as they are completed.
+### Day 1 — Foundations
+- Created fixed Arabic and English service responses using `FakeClient`.
+- Built `ask(question)` with input validation, a trace ID, model information, and latency measurement.
+- Checked expected answers and verified that blank input does not call the client.
 
-## Repository structure
+### Day 2 — Structured Tickets and Read-Only Tools
+- Added `extract_ticket()` to turn questions into structured fields: `service`, `city`, `request_id`, and `needs_clarification`.
+- Added `validate_ticket()` to enforce field names, data types, formats, and consistency rules.
+- Built `route()` and `check_status()` to handle clarification requests, read-only lookups, and record ownership checks.
+- Rejected unsupported cancellation requests and kept the synthetic records unchanged.
+
+### Day 2 Improvement — Data-Driven Validation
+- Created **eight synthetic test cases** covering valid tickets, malformed fields, invalid values, missing fields, and clarification logic.
+- Ran the dataset through the existing workflow and compared actual results with expected responses and tool-call counts.
+- Saved the detailed report in [`day2_validation_results.json`](results/core/day2_validation_results.json).
+
+### Optional Homework
+- **Day 1:** Ran `google/flan-t5-small` locally on a Colab CPU to generate an answer from a synthetic FAQ context.
+- **Day 2:** Built a separate `dispatch(call, trusted_user)` workflow that validates structured tool calls, allows only `check_status`, and verifies record ownership.
+
+## Key Results
+
+| Component | Recorded result | Evidence |
+| --- | --- | --- |
+| Day 1 core | 3 expected FAQ answers verified; invalid blank input rejected | [Baseline results](results/core/baseline_results.json) |
+| Day 2 core | **5/5 reference cases passed**; records unchanged | [Day 2 results](results/core/day2_results.json) |
+| Day 2 validation improvement | **8/8 tests passed**; records unchanged | [Validation report](results/core/day2_validation_results.json) |
+| Day 2 tool-dispatch homework | **7/7 tests passed**; records unchanged | [Homework notebook](homework/day2_tools.ipynb) |
+| Day 1 real-model homework | Generated: **"Use its reference number"** | [Model report](results/day1/live_demo_result.json) |
+
+The Day 2 reference cases check an owned request, a missing reference, a nonexistent record, a disallowed cancellation, and an unauthorized lookup. The extra validation tests verify that malformed tickets are rejected before a status-tool call.
+
+The recorded Day 1 real-model run used **34 input tokens**, **6 output tokens including special tokens**, and **0.306 seconds of CPU inference**. These are observations from one run, not performance benchmarks.
+
+## Repository Structure
 
 ```text
 Murshid_Gamar_Sadaia/
 ├── README.md
 ├── notebooks/
-│   └── murshid.ipynb
+│   └── murshid.ipynb                  # Cumulative core project (Days 1–2)
 ├── homework/
-│   ├── day1_real_model.ipynb
-│   └── day2_tools.ipynb
+│   ├── day1_real_model.ipynb          # Real-model demonstration
+│   └── day2_tools.ipynb               # Tool-dispatch homework
 ├── results/
 │   ├── core/
-│   │   ├── baseline_results.json
-│   │   └── day2_results.json
+│   │   ├── baseline_results.json      # Day 1 core output
+│   │   ├── day2_results.json          # Day 2 core output
+│   │   └── day2_validation_results.json  # Eight-case validation report
 │   └── day1/
-│       └── live_demo_result.json
+│       └── live_demo_result.json      # Day 1 real-model output
 └── docs/
-    └── project-notes.md
+    └── project-notes.md               # Design decisions and limitations
 ```
 
-## Run the core project
+## How to Run
 
-1. Open [notebooks/murshid.ipynb](notebooks/murshid.ipynb) in Google Colab.
-2. Select a Python 3 runtime (Python 3.9 or newer).
-3. Run the cells in order.
-4. Check that Day 1 and Day 2 both print `"checks": "passed"`.
-5. Review [Day 1 baseline results](results/core/baseline_results.json) and [Day 2 results](results/core/day2_results.json).
+**Core project**
 
-The core Days 1–2 use only Python's standard library. The status tool looks up fictional in-memory records; there is no real database, external API or model download.
+1. Open [`notebooks/murshid.ipynb`](notebooks/murshid.ipynb) in Google Colab.
+2. Use a Python 3 runtime (Python 3.9 or newer) with CPU.
+3. Run all cells in order. Both Day 1 and Day 2 should print `"checks": "passed"`, and the additional Day 2 validation report should show `"passed": 8`.
 
-## Day 2 verification
+The core uses Python's standard library; no extra packages, API keys, or model downloads are required.
 
-The core notebook checks these cases: an owned reference (`under_review`), a missing reference number (`needs_clarification`), an absent record (`not_found`), a cancellation request (`unsupported_action`), and an unowned reference (`access_denied`).
+**Day 1 optional homework**
 
-The recorded `tool_calls` values are `[1, 0, 1, 0, 1]`. The tests also check that the synthetic data is unchanged and that a Day 1 FAQ still works. An added negative test verifies that a ticket with a string instead of a Boolean flag is rejected before a status-tool call.
+Open [`homework/day1_real_model.ipynb`](homework/day1_real_model.ipynb) separately and run its cells in order. It uses `transformers==4.49.0` and `sentencepiece==0.2.1`, downloading the public `google/flan-t5-small` model on first use. The SentencePiece version was adjusted after an installation issue in the Colab Python 3.13 environment. A GPU or paid inference API is not required.
 
-## Run the Day 2 homework
+**Day 2 optional homework**
 
-1. Open [homework/day2_tools.ipynb](homework/day2_tools.ipynb) in a separate Google Colab Python 3/CPU runtime.
-2. Run its three code cells in order. No package installation, model download or API key is required.
-3. Confirm that the saved output reports `"passed": 7`, `"total": 7`, `"records_unchanged": true`, and seven individual cases with `"passed": true`.
+Open [`homework/day2_tools.ipynb`](homework/day2_tools.ipynb) separately and run its three code cells in order. The expected result is `"passed": 7` with `"records_unchanged": true`. No package installation is required.
 
-The structured tool calls in this homework are simulated test objects; no language model selects tools. **Validation** rejects malformed inputs and disallowed tool names, while **authorization** checks record ownership using a separately supplied demo identity.
+## Design Notes and Limitations
 
-## Run the Day 1 homework
+- **Validation** checks the shape and values of input data; **authorization** checks whether the current user may access a record.
+- The demo user identity is supplied separately from the question or tool-call arguments. It is a teaching fixture, **not production authentication**.
+- Status lookups are read-only. Missing and unauthorized records receive the same outward-facing message in the core workflow.
+- The Day 2 homework uses hand-written tool-call objects, **not model-selected or provider-native tool calling**.
+- The real-model homework demonstrates generation from model weights, whereas `FakeClient` returns predefined responses. Neither example establishes production readiness.
 
-1. Open [homework/day1_real_model.ipynb](homework/day1_real_model.ipynb) in a **separate** Colab notebook and Python 3 CPU runtime.
-2. Run all four cells in order. The first run downloads the model and dependencies.
-3. Review the generated response, token counts and inference time.
-4. The notebook writes `murshid_live_outputs/live_demo_result.json`; the saved report is also in [results/day1/live_demo_result.json](results/day1/live_demo_result.json).
+More implementation details are in [`docs/project-notes.md`](docs/project-notes.md).
 
-The notebook uses `transformers==4.49.0` and `sentencepiece==0.2.1`. SentencePiece was changed from 0.2.0 because the original version failed to install in the Python 3.13 Colab runtime. No paid inference API or GPU is required.
-
-## Day 1 homework result
-
-**Context:** You can check your application status using its reference number.
-
-**Question:** How can I check my application status?
-
-**Generated answer:** Use its reference number
-
-| Metric | Recorded value |
-| --- | --- |
-| Model | `google/flan-t5-small` |
-| Device | CPU |
-| Input tokens | 34 |
-| Output tokens (including special tokens) | 6 |
-| Inference time | 0.306 seconds |
-| External inference API calls | 0 |
-
-The answer uses the reference number from the context and does not invent a fee, date or status. This is one example, not a broad model evaluation.
-
-## Real model vs. FakeClient
-
-The tokenizer converts the context and question into input token IDs; FLAN-T5 generates output tokens, which are decoded into a readable answer. Unlike `FakeClient`, which returns fixed answers from a dictionary, FLAN-T5 generates its response using model weights.
-
-## Notes
-
-See [project notes](docs/project-notes.md) for the data, design decisions, testing approach and limitations. This project uses synthetic data and does not access real applications or perform real transactions.
+---
 
 **Course:** LLM Application Engineering — SDA-AIE-213  
-**Training context:** [SDAIA Academy on GitHub](https://github.com/SDAIAAcademy)  
+**Training context:** [SDAIA Academy](https://github.com/SDAIAAcademy)  
 **Instructor:** Meaad Al-Marri
