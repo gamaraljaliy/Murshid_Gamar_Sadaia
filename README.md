@@ -81,4 +81,5 @@ The tokenizer converts the context and question into input token IDs; FLAN-T5 ge
 See [project notes](docs/project-notes.md) for the data, design decisions, testing approach and limitations. This project uses synthetic data and does not access real applications or perform real transactions.
 
 **Course:** LLM Application Engineering — SDA-AIE-213  
+**Training context:** [SDAIA Academy on GitHub](https://github.com/SDAIAAcademy)  
 **Instructor:** Meaad Al-Marri
