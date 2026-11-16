@@ -40,9 +40,24 @@ For the reference question `ما حالة طلبي REF-1001 في الرياض؟`
 
 The five recorded case codes are `under_review`, `needs_clarification`, `not_found`, `unsupported_action` and `access_denied`. The corresponding status-tool call counts are `[1, 0, 1, 0, 1]`. The tests also verify that `REF-1002` does not expose its real status to the demo user, that a Day 1 FAQ still works, and that `RECORDS == INITIAL_RECORDS`.
 
-**Issue corrected during review:** The earlier saved notebook had an unnumbered first cell despite showing its output. After rerunning the notebook and saving it again, all six cells have execution counts (11–16). This corrected the saved execution evidence without changing the program logic or weakening the tests.
+**Testing improvement:** An extra negative check was added to the Day 2 core notebook to reject a ticket whose `needs_clarification` value is the string `'False'` rather than a Boolean. The saved output reports `Extra validation test: passed`, with zero status-tool calls for the invalid ticket. The main five-case tests remain unchanged.
+
+**Notebook execution metadata:** The latest GitHub-saved core notebook retains Day 1/Day 2 output logs, but its code-cell execution counts are `null` after saving. The preserved outputs show successful execution; the notebook should be rerun top-to-bottom when opened in a fresh runtime.
 
 **Limitation:** The records and user identity are fictional. Error codes in the JSON results are for classroom inspection; real status services need stronger authentication, authorization, logging and privacy controls.
+
+## Day 2 homework: validate and dispatch structured tool calls
+
+The optional homework is saved separately as `homework/day2_tools.ipynb`; it does not change the cumulative core notebook.
+
+The `dispatch(call, trusted_user)` function accepts a dictionary with exactly the fields `name` and `arguments`. It permits only `check_status`, requires a single string `reference` argument in the `REF-0000` format, and then checks record ownership against the separately supplied demo user.
+
+- **Validation** checks whether the call structure, tool name, argument fields and value format are valid. Invalid requests are rejected before record lookup.
+- **Authorization** checks whether the trusted current user owns the record. A valid reference does not automatically permit access.
+- The dispatcher returns the same outward `unavailable` result for absent records and records owned by another user, limiting information disclosure.
+- These calls are supplied directly as simulated inputs; this is not native LLM tool calling or production authentication.
+
+The seven saved automated tests cover an owned reference, an unowned reference, a missing reference, a disallowed tool, an extra owner argument, a numeric reference, and a string instead of a call dictionary. The report shows `passed: 7`, `total: 7` and `records_unchanged: true`. Each individual case reports `passed: true`. The notebook uses Python's standard library only.
 
 ## Day 1 homework: real model
 
@@ -73,7 +88,8 @@ A non-empty generated answer is a successful execution check, not proof of corre
 ## Running and reproducing
 
 - **Core:** run `notebooks/murshid.ipynb` top-to-bottom using Python 3.9+ in Colab.
-- **Homework:** run `homework/day1_real_model.ipynb` top-to-bottom in a separate Colab Python 3 CPU runtime with internet access to download dependencies and model files.
+- **Day 1 homework:** run `homework/day1_real_model.ipynb` top-to-bottom in a separate Colab Python 3 CPU runtime with internet access to download dependencies and model files.
+- **Day 2 homework:** run `homework/day2_tools.ipynb` top-to-bottom in a separate Colab Python 3 CPU runtime. No downloads are required.
 - **Saved outputs:** `results/core/baseline_results.json`, `results/core/day2_results.json`, and `results/day1/live_demo_result.json`.
 
 ## Limitations and next steps
