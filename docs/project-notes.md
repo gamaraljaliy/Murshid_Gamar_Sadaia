@@ -71,6 +71,22 @@ Day 3 extends the original cumulative notebook with Cells 7–10. `PROMPT_VERSIO
 
 **Limitation:** The guard is a basic keyword/pattern filter; it may miss rephrased malicious inputs or reject harmless phrasing. The golden cases test selected mock behavior, not live-model safety or reliability.
 
+## Day 4 core: public FAQ caching, metrics, and final evaluation
+
+The cumulative notebook adds Day 4 code after the existing Day 3 regression and boundary-test cells. The original Day 1–3 functionality and reference cases are retained.
+
+**Caching design:** `run_app()` caches only the two exact public FAQs (`FAQ_AR`, `FAQ_EN`) when no `ticket_override` is supplied. Cache entries have a 300-second TTL and are keyed by `(question, language, MODEL, prompt_version, directory_version)`. The cache is initially empty. Version changes and the TTL boundary cause misses, while status requests never enter the shared cache; authorization continues through the existing Day 2 route. This is important because request-status answers are user-specific or can change.
+
+**Controlled comparison:** Three calls to the same public FAQ with caching disabled cause three FakeClient calls. With an initially empty cache, the same three requests require one FakeClient call; hits occur on the second and third requests, for a **66.7% hit rate**. Both conditions are synthetic and controlled, not proof of real API savings or a statistically meaningful latency improvement.
+
+**Regression and boundaries:** The saved Day 4 run checks prompt/directory version invalidation, expiration at 300 seconds, and the exclusion of `REF-1001`, `REF-9999`, and `REF-1002` from caching. It also asserts that synthetic records are unchanged. Running the original ten golden tests through the new `run_app` entry point reports **10/10 passed**.
+
+**Exported evidence:** `results/core/day4_results.json` contains the cache comparison; `results/core/final_report.json` contains the golden test results, method and limits; `results/core/metrics.json` contains 22 recorded request measurements (trace ID, code, cache hit, call counts, elapsed milliseconds), without raw question text or record IDs; `results/core/synthetic_data.json` documents the fictional directory and records. The notebook also creates `murshid_submission.zip` locally for optional downloading; it is not required as a checked-in artifact.
+
+**Costs and claims:** The core mode is `mock` and makes **zero external inference API calls**. The `$0.0036` per-request calculation uses example token counts and illustrative USD rates only; it is not a bill, provider price, or estimated real savings. The real-model evaluation extension is a separate optional homework activity, not part of the core's claim.
+
+**Future improvement:** Use a broader public-FAQ paraphrase evaluation and investigate cache invalidation when directory content is changed, while continuing to keep personal status results out of a shared cache.
+
 ## Day 2 homework: validate and dispatch structured tool calls
 
 The optional homework is saved separately as `homework/day2_tools.ipynb`; it does not change the cumulative core notebook.
@@ -126,8 +142,8 @@ A non-empty generated answer is a successful execution check, not proof of corre
 - **Day 1 homework:** run `homework/day1_real_model.ipynb` top-to-bottom in a separate Colab Python 3 CPU runtime with internet access to download dependencies and model files.
 - **Day 2 homework:** run `homework/day2_tools.ipynb` top-to-bottom in a separate Colab Python 3 CPU runtime. No downloads are required.
 - **Day 3 homework:** run the single code cell in `homework/day3_errors.ipynb` separately; review the three caught errors and corrected input in its output, plus the Markdown explanation.
-- **Saved outputs:** `results/core/baseline_results.json`, `results/core/day2_results.json`, `results/core/day2_validation_results.json`, `results/core/day3_results.json`, `results/homework/day1_live_demo_result.json`, `results/homework/day2_tools_result.json`, and `results/homework/day3_errors_result.json`.
+- **Saved outputs:** `results/core/baseline_results.json`, `results/core/day2_results.json`, `results/core/day2_validation_results.json`, `results/core/day3_results.json`, `results/core/day4_results.json`, `results/core/final_report.json`, `results/core/metrics.json`, `results/core/synthetic_data.json`, `results/homework/day1_live_demo_result.json`, `results/homework/day2_tools_result.json`, and `results/homework/day3_errors_result.json`.
 
 ## Limitations and next steps
 
-This is a teaching exercise using a small synthetic example. It does not test broad factual accuracy, Arabic performance or production readiness. The core still uses a mock client and a local read-only status tool after Day 3. The separate Day 3 input-error homework is complete; Day 4 core work remains to be added.
+This is a teaching exercise using a small synthetic example. It does not test broad factual accuracy, Arabic performance or production readiness. The completed four-day core uses a mock client, public FAQ caching, and a local read-only status tool. Days 1–3 optional homework is complete; the separate Day 4 real-model evaluation homework has not yet been added.
