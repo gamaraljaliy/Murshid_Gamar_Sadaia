@@ -43,7 +43,7 @@ The core uses fictional service information and records. It does not connect to 
 
 ### Optional Homework
 - **Day 1:** Ran `google/flan-t5-small` locally on a Colab CPU to generate an answer from a synthetic FAQ context.
-- **Day 2:** Built a separate `dispatch(call, trusted_user)` workflow that validates structured tool calls, allows only `check_status`, and verifies record ownership.
+- **Day 2:** Built a separate `dispatch(call, trusted_user)` workflow that validates structured tool calls, allows only `check_status`, and verifies record ownership. The notebook now includes an overview, an explanation of validation versus authorization, the seven-case test matrix, and limitations.
 - **Day 3:** Completed the separate [error-handling exercise](homework/day3_errors.ipynb), validating three intentional `ValueError` rejections and a corrected non-empty question. The explanation of `raise`, `try`, and `except` is included as Markdown.
 
 ## Key Results
@@ -53,7 +53,7 @@ The core uses fictional service information and records. It does not connect to 
 | Day 1 core | 3 expected FAQ answers verified; invalid blank input rejected | [Baseline results](results/core/baseline_results.json) |
 | Day 2 core | **5/5 reference cases passed**; records unchanged | [Day 2 results](results/core/day2_results.json) |
 | Day 2 validation improvement | **8/8 tests passed**; records unchanged | [Validation report](results/core/day2_validation_results.json) |
-| Day 2 tool-dispatch homework | **7/7 tests passed**; records unchanged | [Homework notebook](homework/day2_tools.ipynb) |
+| Day 2 tool-dispatch homework | **7/7 tests passed**; records unchanged | [Test report](results/homework/day2_tools_result.json) · [Notebook](homework/day2_tools.ipynb) |
 | Day 3 core golden tests | **10/10 passed**; `pass_rate=100.0`, `mode=mock` | [Day 3 report](results/core/day3_results.json) |
 | Day 3 Arabic guard check | **PASS**; forbidden phrase rejected without a tool call | [Core notebook](notebooks/murshid.ipynb) |
 | Day 3 additional boundary and input tests | **5/5 passed** | [Core notebook](notebooks/murshid.ipynb) |
@@ -84,6 +84,7 @@ Murshid_Gamar_Sadaia/
 │   │   └── day3_results.json          # Day 3 golden tests
 │   └── homework/
 │       ├── day1_live_demo_result.json # Day 1 real-model output
+│       ├── day2_tools_result.json     # Day 2 tool-call test report
 │       └── day3_errors_result.json    # Day 3 error-handling report
 └── docs/
     └── project-notes.md               # Decisions, tests, and limits
@@ -105,7 +106,7 @@ Open [`homework/day1_real_model.ipynb`](homework/day1_real_model.ipynb) separate
 
 **Day 2 optional homework**
 
-Open [`homework/day2_tools.ipynb`](homework/day2_tools.ipynb) separately and run its three code cells in order. The expected result is `"passed": 7` with `"records_unchanged": true`. No package installation is required.
+Open [`homework/day2_tools.ipynb`](homework/day2_tools.ipynb) separately and run its three code cells in order. The first Markdown section explains the goal and workflow; the final Markdown section documents the tests, validation/authorization distinction, and limitations. The expected output is `"passed": 7`, `"total": 7`, and `"records_unchanged": true`. Compare the run with the [saved seven-case report](results/homework/day2_tools_result.json). No package installation, model, or external API is required.
 
 ## Day 3 Optional Homework
 
