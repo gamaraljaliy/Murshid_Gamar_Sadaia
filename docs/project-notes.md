@@ -102,6 +102,24 @@ The seven saved automated tests cover an owned reference, an unowned reference, 
 
 The seven-case report was exported directly from the notebook's preserved execution output to `results/homework/day2_tools_result.json`. The notebook also has Markdown sections for the objective, setup, execution order, expected outputs, test-case matrix, validation versus authorization, and scope limitations. The three executable cells and their saved results were preserved without code changes.
 
+## Day 4 homework: real-model FAQ evaluation
+
+The separate optional notebook is saved at `homework/day4_evaluation.ipynb`, with three executable cells and a Markdown manual review. It loads `google/flan-t5-small` at the pinned revision on CPU, uses a fixed synthetic context, and generates answers for E01–E03 using `do_sample=False`, `num_beams=1` and `max_new_tokens=48`.
+
+**Recorded output (from the learner's run):**
+
+| Case | Generated answer | Input tokens | Output tokens (including special) | Inference seconds | Manual review |
+| --- | --- | ---: | ---: | ---: | --- |
+| E01 | Use its reference number | 34 | 6 | 0.266 | Supported |
+| E02 | Reference number | 36 | 4 | 0.123 | Supported; brief |
+| E03 | Use its reference number | 37 | 6 | 0.168 | Supported |
+
+The exported `results/homework/evaluation_result.json` is identical to the JSON printed by the saved notebook. The indicator reports **3/3 keyword hits** because each answer includes both `reference` and `number`. Manual review in the notebook judges all three consistent with the context and finds no invented fees, dates, or statuses. This indicator is *not* semantic accuracy. The small English-only evaluation cannot show general accuracy, Arabic competence, or safety.
+
+The core uses `mode=mock`; this optional homework uses `mode=real_local_model` and reports **zero external inference API calls**. The preserved `manual_review` field in the machine-generated JSON contains the original instructions to review answers; the learner's actual conclusions are in the notebook's Markdown cell. The model run is not a billed API call.
+
+**Improvement proposed in the homework:** use more diverse English and Arabic service questions, unsupported cases, and manually specified answer-quality criteria rather than a two-keyword proxy.
+
 ## Day 3 homework: deliberate input errors
 
 The optional exercise is separate from the core and saved at `homework/day3_errors.ipynb`. The single executable code cell defines `validate_public_question()`, which raises `ValueError` for a non-string or blank question and for text longer than 500 characters. `run_error_examples()` uses `try` and `except ValueError` to confirm these are deliberate rejections rather than unhandled runtime failures.
@@ -142,8 +160,9 @@ A non-empty generated answer is a successful execution check, not proof of corre
 - **Day 1 homework:** run `homework/day1_real_model.ipynb` top-to-bottom in a separate Colab Python 3 CPU runtime with internet access to download dependencies and model files.
 - **Day 2 homework:** run `homework/day2_tools.ipynb` top-to-bottom in a separate Colab Python 3 CPU runtime. No downloads are required.
 - **Day 3 homework:** run the single code cell in `homework/day3_errors.ipynb` separately; review the three caught errors and corrected input in its output, plus the Markdown explanation.
-- **Saved outputs:** `results/core/baseline_results.json`, `results/core/day2_results.json`, `results/core/day2_validation_results.json`, `results/core/day3_results.json`, `results/core/day4_results.json`, `results/core/final_report.json`, `results/core/metrics.json`, `results/core/synthetic_data.json`, `results/homework/day1_live_demo_result.json`, `results/homework/day2_tools_result.json`, and `results/homework/day3_errors_result.json`.
+- **Day 4 homework:** run `homework/day4_evaluation.ipynb` in a separate CPU runtime. The three code cells cover installation, model evaluation, and execution; review the Markdown interpretation underneath.
+- **Saved outputs:** `results/core/baseline_results.json`, `results/core/day2_results.json`, `results/core/day2_validation_results.json`, `results/core/day3_results.json`, `results/core/day4_results.json`, `results/core/final_report.json`, `results/core/metrics.json`, `results/core/synthetic_data.json`, `results/homework/day1_live_demo_result.json`, `results/homework/day2_tools_result.json`, `results/homework/day3_errors_result.json`, and `results/homework/evaluation_result.json`.
 
 ## Limitations and next steps
 
-This is a teaching exercise using a small synthetic example. It does not test broad factual accuracy, Arabic performance or production readiness. The completed four-day core uses a mock client, public FAQ caching, and a local read-only status tool. Days 1–3 optional homework is complete; the separate Day 4 real-model evaluation homework has not yet been added.
+This is a teaching exercise using a small synthetic example. It does not test broad factual accuracy, Arabic performance or production readiness. The completed four-day core uses a mock client, public FAQ caching, and a local read-only status tool. The four optional homework notebooks are complete, including the Day 4 local-model evaluation. See `docs/synthetic-data.md` for dataset and ticket-field documentation.
