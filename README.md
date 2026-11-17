@@ -25,14 +25,14 @@ Everything in the core is written in Python, uses synthetic data, and runs in on
 flowchart TD
     A["User question"] --> B["run_app()"]
     B --> C{"Public FAQ in cache?"}
-    C -- Hit --> D["Reuse public answer"]
-    C -- Miss / not eligible --> E["Input guard"]
-    E -- Rejected --> F["Safe rejection"]
-    E -- Accepted --> G["Ticket extraction + validation"]
+    C -->|Hit| D["Reuse public answer"]
+    C -->|Miss or ineligible| E["Input guard"]
+    E -->|Rejected| F["Safe rejection"]
+    E -->|Accepted| G["Ticket extraction + validation"]
     G --> H{"Route"}
-    H -- Public FAQ --> I["FakeClient"]
-    H -- Status inquiry --> J["Read-only lookup + ownership check"]
-    H -- Other --> K["Clarification / refusal"]
+    H -->|Public FAQ| I["FakeClient"]
+    H -->|Status inquiry| J["Read-only lookup + ownership check"]
+    H -->|Other| K["Clarification / refusal"]
     I --> L["Output validation"]
     J --> L
     K --> L
