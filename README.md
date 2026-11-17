@@ -44,6 +44,7 @@ The core uses fictional service information and records. It does not connect to 
 ### Optional Homework
 - **Day 1:** Ran `google/flan-t5-small` locally on a Colab CPU to generate an answer from a synthetic FAQ context.
 - **Day 2:** Built a separate `dispatch(call, trusted_user)` workflow that validates structured tool calls, allows only `check_status`, and verifies record ownership.
+- **Day 3:** Completed the separate [error-handling exercise](homework/day3_errors.ipynb), validating three intentional `ValueError` rejections and a corrected non-empty question. The explanation of `raise`, `try`, and `except` is included as Markdown.
 
 ## Key Results
 
@@ -58,6 +59,7 @@ The core uses fictional service information and records. It does not connect to 
 | Day 3 additional boundary and input tests | **5/5 passed** | [Core notebook](notebooks/murshid.ipynb) |
 | Day 3 prompt-injection regression | **PASS**; rephrased instruction blocked with `tool_calls=0`; original golden tests **10/10** | [Core notebook](notebooks/murshid.ipynb) |
 | Day 1 real-model homework | Generated: **"Use its reference number"** | [Model report](results/homework/day1_live_demo_result.json) |
+| Day 3 error-handling homework | **3/3 expected rejections caught**; corrected input accepted; `checks=passed` | [Homework report](results/homework/day3_errors_result.json) |
 
 The Day 2 reference cases check an owned request, a missing reference, a nonexistent record, a disallowed cancellation, and an unauthorized lookup. The extra validation tests verify that malformed tickets are rejected before a status-tool call.
 
@@ -72,7 +74,8 @@ Murshid_Gamar_Sadaia/
 │   └── murshid.ipynb                  # Cumulative core project (Days 1–3)
 ├── homework/
 │   ├── day1_real_model.ipynb          # Real-model demonstration
-│   └── day2_tools.ipynb               # Controlled tool-dispatch practice
+│   ├── day2_tools.ipynb               # Controlled tool-dispatch practice
+│   └── day3_errors.ipynb              # Input errors and exception handling
 ├── results/
 │   ├── core/
 │   │   ├── baseline_results.json      # Day 1 core
@@ -80,7 +83,8 @@ Murshid_Gamar_Sadaia/
 │   │   ├── day2_validation_results.json  # Eight-case validation check
 │   │   └── day3_results.json          # Day 3 golden tests
 │   └── homework/
-│       └── day1_live_demo_result.json # Day 1 real-model output
+│       ├── day1_live_demo_result.json # Day 1 real-model output
+│       └── day3_errors_result.json    # Day 3 error-handling report
 └── docs/
     └── project-notes.md               # Decisions, tests, and limits
 ```
@@ -105,7 +109,9 @@ Open [`homework/day2_tools.ipynb`](homework/day2_tools.ipynb) separately and run
 
 ## Day 3 Optional Homework
 
-The Day 3 error-handling exercise is **not yet completed**. It will be kept in a separate notebook (`homework/day3_errors.ipynb`) once tested and uploaded.
+Open [`homework/day3_errors.ipynb`](homework/day3_errors.ipynb) in a separate Google Colab Python 3/CPU runtime. Run its one code cell and read the Markdown explanation below it. The code intentionally raises and catches three `ValueError` cases: `None`, blank input, and a 501-character string. A valid question passes after surrounding whitespace is stripped.
+
+The saved output confirms `"checks": "passed"`, three `"expected_rejection": true` entries, and `"corrected_input": "accepted"`. See [the exported report](results/homework/day3_errors_result.json). No extra packages, model download, or API access is needed.
 
 ## Design Notes and Limitations
 
