@@ -6,9 +6,11 @@ A small, testable service-assistant project built as part of **LLM Application E
 
 Murshid Mini explores how to build reliable application workflows around language-model-style interactions. It begins with a predictable `FakeClient` and extends into structured ticket extraction, schema validation, a controlled read-only status lookup, and ownership checks.
 
-The core work lives in **one cumulative notebook** (`notebooks/murshid.ipynb`) for the four-day course. Optional homework is kept in separate notebooks. **The four-day core project is complete; the separate Day 4 real-model homework is not yet included.**
+The core work lives in **one cumulative notebook** (`notebooks/murshid.ipynb`) for the four-day course. Optional homework is kept in separate notebooks. **The four-day core project and all four optional homework notebooks are complete.**
 
 The core uses fictional service information and records. It does not connect to a real government system, database, or hosted LLM API.
+
+**Intended users:** learners practicing LLM application engineering and developers studying how a public-service assistant can answer general questions while protecting user-specific request status. The problem is not model training; it is building a controlled, testable workflow around a language-model-shaped interface. See the [fictional dataset and ticket contract](docs/synthetic-data.md).
 
 ## What I've Built
 
@@ -52,7 +54,7 @@ The core uses fictional service information and records. It does not connect to 
 - **Day 1:** Ran `google/flan-t5-small` locally on a Colab CPU to generate an answer from a synthetic FAQ context.
 - **Day 2:** Built a separate `dispatch(call, trusted_user)` workflow that validates structured tool calls, allows only `check_status`, and verifies record ownership. The notebook now includes an overview, an explanation of validation versus authorization, the seven-case test matrix, and limitations.
 - **Day 3:** Completed the separate [error-handling exercise](homework/day3_errors.ipynb), validating three intentional `ValueError` rejections and a corrected non-empty question. The explanation of `raise`, `try`, and `except` is included as Markdown.
-- **Day 4:** The separate three-answer real-model evaluation is next; the four-day mock core is already complete.
+- **Day 4:** Evaluated three English FAQ paraphrases with local `google/flan-t5-small` inference on CPU. Preserved actual token counts and generation times, plus a separate manual review of each answer.
 
 ## Key Results
 
@@ -70,6 +72,7 @@ The core uses fictional service information and records. It does not connect to 
 | Day 3 error-handling homework | **3/3 expected rejections caught**; corrected input accepted; `checks=passed` | [Homework report](results/homework/day3_errors_result.json) |
 | Day 4 cache comparison | **3 → 1 mock calls**, **2/3 hits = 66.7%**, zero external API calls | [Day 4 results](results/core/day4_results.json) |
 | Day 4 final regression | **10/10 golden tests passed** after caching; synthetic records unchanged | [Final report](results/core/final_report.json) |
+| Day 4 real-model homework | **3/3 keyword hits**; **3/3 answers manually supported by the provided context**; zero external inference API calls | [Notebook](homework/day4_evaluation.ipynb) · [Observed report](results/homework/evaluation_result.json) |
 
 The Day 2 reference cases check an owned request, a missing reference, a nonexistent record, a disallowed cancellation, and an unauthorized lookup. The extra validation tests verify that malformed tickets are rejected before a status-tool call.
 
@@ -85,7 +88,8 @@ Murshid_Gamar_Sadaia/
 ├── homework/
 │   ├── day1_real_model.ipynb          # Real-model demonstration
 │   ├── day2_tools.ipynb               # Controlled tool-dispatch practice
-│   └── day3_errors.ipynb              # Input errors and exception handling
+│   ├── day3_errors.ipynb              # Input errors and exception handling
+│   └── day4_evaluation.ipynb          # Three-question real-model evaluation
 ├── results/
 │   ├── core/
 │   │   ├── baseline_results.json      # Day 1 core
@@ -99,9 +103,11 @@ Murshid_Gamar_Sadaia/
 │   └── homework/
 │       ├── day1_live_demo_result.json # Day 1 real-model output
 │       ├── day2_tools_result.json     # Day 2 tool-call test report
-│       └── day3_errors_result.json    # Day 3 error-handling report
+│       ├── day3_errors_result.json    # Day 3 error-handling report
+│       └── evaluation_result.json     # Day 4 actual model measurements
 └── docs/
-    └── project-notes.md               # Decisions, tests, and limits
+    ├── project-notes.md               # Technical design, tests, and limits
+    └── synthetic-data.md              # Fictional data and ticket schema
 ```
 
 ## How to Run
@@ -130,7 +136,11 @@ The saved output confirms `"checks": "passed"`, three `"expected_rejection": tru
 
 ## Day 4 Optional Homework
 
-The separate three-question FLAN-T5 evaluation is **not yet completed**. It will be saved as `homework/day4_evaluation.ipynb` with its actual generated answers, token counts, timing measurements, and manual interpretation once run.
+Open [`homework/day4_evaluation.ipynb`](homework/day4_evaluation.ipynb) in a **separate** Google Colab Python 3 CPU runtime. The notebook contains three code cells (dependency setup, evaluation function, and execution) and a Markdown manual review. It uses local `google/flan-t5-small` generation; first use requires access to model weights and packages, but no paid inference API or key. This run used `transformers==4.49.0` and `sentencepiece==0.2.1`.
+
+The saved [`evaluation_result.json`](results/homework/evaluation_result.json) records real measured input/output token counts and `inference_seconds` for E01–E03. All three answers referred to the reference number, giving **3/3 keyword hits**. All three were manually judged to convey the information supported by the synthetic context, although E02 was very brief. The keyword indicator is not a semantic accuracy metric; a three-item English-only evaluation cannot establish broader model quality or Arabic performance.
+
+The separate Day 4 homework uses an actual local model on CPU; the cumulative four-day core remains a deterministic `FakeClient` exercise in `mode=mock` with zero external inference API calls.
 
 ## Design Notes and Limitations
 
@@ -143,7 +153,11 @@ The separate three-question FLAN-T5 evaluation is **not yet completed**. It will
 - The cache experiment counts mock-client calls; it does not establish real model latency, API savings, or correctness beyond the tested examples. The USD **$0.0036** request cost in the report is explicitly hypothetical.
 - None of these examples establishes production readiness.
 
-More implementation details are in [`docs/project-notes.md`](docs/project-notes.md).
+More implementation details are in [`docs/project-notes.md`](docs/project-notes.md); the [synthetic-data card](docs/synthetic-data.md) explains every fictional record and accepted ticket field.
+
+**Example inputs:** `كيف أتابع طلبي؟` returns the public reference-number guidance; `ما حالة طلبي REF-1001 في الرياض؟` returns `under_review` to `demo-user-1`; requesting `REF-1002` as that user returns `access_denied`. These are classroom fixtures, not live government records.
+
+**Future improvement:** expand evaluations to Arabic and more services, including unsupported requests, and use authenticated identity and grounded responses before considering any real deployment.
 
 ---
 
