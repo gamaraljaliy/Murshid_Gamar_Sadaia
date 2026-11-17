@@ -84,6 +84,14 @@ The `dispatch(call, trusted_user)` function accepts a dictionary with exactly th
 
 The seven saved automated tests cover an owned reference, an unowned reference, a missing reference, a disallowed tool, an extra owner argument, a numeric reference, and a string instead of a call dictionary. The report shows `passed: 7`, `total: 7` and `records_unchanged: true`. Each individual case reports `passed: true`. The notebook uses Python's standard library only.
 
+## Day 3 homework: deliberate input errors
+
+The optional exercise is separate from the core and saved at `homework/day3_errors.ipynb`. The single executable code cell defines `validate_public_question()`, which raises `ValueError` for a non-string or blank question and for text longer than 500 characters. `run_error_examples()` uses `try` and `except ValueError` to confirm these are deliberate rejections rather than unhandled runtime failures.
+
+The three saved rejection cases are `None`, blank spaces, and a 501-character string. The first two yield `Enter a non-empty question string.`; the third yields `Use at most 500 characters.`. The notebook then verifies that a valid question is accepted after trimming whitespace.
+
+The execution output reports three `expected_rejection: true` records, `corrected_input: accepted`, and `checks: passed`. The report is preserved at `results/homework/day3_errors_result.json`; a Markdown cell in the notebook explains `raise`, `try`, `except`, and why an expected refusal counts as a passing test. This is only input-validation and Python exception-handling practice, not a live model or API evaluation.
+
 ## Day 1 homework: real model
 
 The homework uses `google/flan-t5-small` with a pinned model revision and runs inference on CPU. The notebook follows this sequence:
@@ -115,8 +123,9 @@ A non-empty generated answer is a successful execution check, not proof of corre
 - **Core:** run `notebooks/murshid.ipynb` top-to-bottom using Python 3.9+ in Colab.
 - **Day 1 homework:** run `homework/day1_real_model.ipynb` top-to-bottom in a separate Colab Python 3 CPU runtime with internet access to download dependencies and model files.
 - **Day 2 homework:** run `homework/day2_tools.ipynb` top-to-bottom in a separate Colab Python 3 CPU runtime. No downloads are required.
-- **Saved outputs:** `results/core/baseline_results.json`, `results/core/day2_results.json`, `results/core/day2_validation_results.json`, `results/core/day3_results.json`, and `results/homework/day1_live_demo_result.json`.
+- **Day 3 homework:** run the single code cell in `homework/day3_errors.ipynb` separately; review the three caught errors and corrected input in its output, plus the Markdown explanation.
+- **Saved outputs:** `results/core/baseline_results.json`, `results/core/day2_results.json`, `results/core/day2_validation_results.json`, `results/core/day3_results.json`, and `results/homework/day1_live_demo_result.json`, and `results/homework/day3_errors_result.json`.
 
 ## Limitations and next steps
 
-This is a teaching exercise using a small synthetic example. It does not test broad factual accuracy, Arabic performance or production readiness. The core still uses a mock client and a local read-only status tool after Day 3. The separate Day 3 optional input-error exercise and Day 4 core work will be added only after they are completed.
+This is a teaching exercise using a small synthetic example. It does not test broad factual accuracy, Arabic performance or production readiness. The core still uses a mock client and a local read-only status tool after Day 3. The separate Day 3 input-error homework is complete; Day 4 core work remains to be added.
