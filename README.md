@@ -6,7 +6,7 @@ A small, testable service-assistant project built as part of **LLM Application E
 
 Murshid Mini explores how to build reliable application workflows around language-model-style interactions. It begins with a predictable `FakeClient` and extends into structured ticket extraction, schema validation, a controlled read-only status lookup, and ownership checks.
 
-The core work lives in **one cumulative notebook** (`notebooks/murshid.ipynb`) for the four-day course. Optional homework is kept in separate notebooks. **Days 1–3 are complete; Day 4 is not yet included.**
+The core work lives in **one cumulative notebook** (`notebooks/murshid.ipynb`) for the four-day course. Optional homework is kept in separate notebooks. **The four-day core project is complete; the separate Day 4 real-model homework is not yet included.**
 
 The core uses fictional service information and records. It does not connect to a real government system, database, or hosted LLM API.
 
@@ -41,10 +41,18 @@ The core uses fictional service information and records. It does not connect to 
 - **Verification:** The saved notebook now records `blocked_instruction` with `tool_calls=0` for the same input. The regression check and the original **10/10** golden cases pass; five added input/boundary tests also show **5/5 passed**.
 - **Scope:** This is a narrow, pattern-based improvement, **not** general prompt-injection protection. [Review the tested notebook](notebooks/murshid.ipynb).
 
+### Day 4 — Cache, Measurements, and Final Report
+- Added an exact-match, five-minute cache for the two public FAQ questions; application-status queries and ticket overrides are excluded.
+- Made cache keys depend on question, language, model, prompt version, and directory version so version changes do not reuse stale entries.
+- Verified the three-repeat comparison: **3 mock calls without cache vs. 1 with cache**, with hit sequence `[false, true, true]` and **66.7% hit rate**.
+- Checked cache expiration, version changes, owner-only status access, unchanged records, and all **10/10** existing golden cases after integration.
+- Exported the [final evaluation](results/core/final_report.json), [cache comparison](results/core/day4_results.json), [per-request metrics](results/core/metrics.json), and [synthetic test data](results/core/synthetic_data.json). No external inference API calls were made in the core.
+
 ### Optional Homework
 - **Day 1:** Ran `google/flan-t5-small` locally on a Colab CPU to generate an answer from a synthetic FAQ context.
 - **Day 2:** Built a separate `dispatch(call, trusted_user)` workflow that validates structured tool calls, allows only `check_status`, and verifies record ownership. The notebook now includes an overview, an explanation of validation versus authorization, the seven-case test matrix, and limitations.
 - **Day 3:** Completed the separate [error-handling exercise](homework/day3_errors.ipynb), validating three intentional `ValueError` rejections and a corrected non-empty question. The explanation of `raise`, `try`, and `except` is included as Markdown.
+- **Day 4:** The separate three-answer real-model evaluation is next; the four-day mock core is already complete.
 
 ## Key Results
 
@@ -60,6 +68,8 @@ The core uses fictional service information and records. It does not connect to 
 | Day 3 prompt-injection regression | **PASS**; rephrased instruction blocked with `tool_calls=0`; original golden tests **10/10** | [Core notebook](notebooks/murshid.ipynb) |
 | Day 1 real-model homework | Generated: **"Use its reference number"** | [Model report](results/homework/day1_live_demo_result.json) |
 | Day 3 error-handling homework | **3/3 expected rejections caught**; corrected input accepted; `checks=passed` | [Homework report](results/homework/day3_errors_result.json) |
+| Day 4 cache comparison | **3 → 1 mock calls**, **2/3 hits = 66.7%**, zero external API calls | [Day 4 results](results/core/day4_results.json) |
+| Day 4 final regression | **10/10 golden tests passed** after caching; synthetic records unchanged | [Final report](results/core/final_report.json) |
 
 The Day 2 reference cases check an owned request, a missing reference, a nonexistent record, a disallowed cancellation, and an unauthorized lookup. The extra validation tests verify that malformed tickets are rejected before a status-tool call.
 
@@ -71,7 +81,7 @@ The recorded Day 1 real-model run used **34 input tokens**, **6 output tokens in
 Murshid_Gamar_Sadaia/
 ├── README.md
 ├── notebooks/
-│   └── murshid.ipynb                  # Cumulative core project (Days 1–3)
+│   └── murshid.ipynb                  # Cumulative core project (Days 1–4)
 ├── homework/
 │   ├── day1_real_model.ipynb          # Real-model demonstration
 │   ├── day2_tools.ipynb               # Controlled tool-dispatch practice
@@ -81,7 +91,11 @@ Murshid_Gamar_Sadaia/
 │   │   ├── baseline_results.json      # Day 1 core
 │   │   ├── day2_results.json          # Day 2 core
 │   │   ├── day2_validation_results.json  # Eight-case validation check
-│   │   └── day3_results.json          # Day 3 golden tests
+│   │   ├── day3_results.json          # Day 3 golden tests
+│   │   ├── day4_results.json          # Day 4 cache experiment
+│   │   ├── final_report.json          # Final evaluation and limitations
+│   │   ├── metrics.json               # Aggregate request traces (no raw inputs)
+│   │   └── synthetic_data.json        # Fictional service directory and records
 │   └── homework/
 │       ├── day1_live_demo_result.json # Day 1 real-model output
 │       ├── day2_tools_result.json     # Day 2 tool-call test report
@@ -96,7 +110,7 @@ Murshid_Gamar_Sadaia/
 
 1. Open [`notebooks/murshid.ipynb`](notebooks/murshid.ipynb) in Google Colab.
 2. Use a Python 3 runtime (Python 3.9 or newer) with CPU.
-3. Run all cells in order. Day 1 and Day 2 should print `"checks": "passed"`; Day 2 validation should show `"passed": 8`; and the Day 3 report should show `"passed": 10`, `"total": 10`, and `"mode": "mock"`.
+3. Run all cells in order. Day 1 and Day 2 should print `"checks": "passed"`; Day 2 validation should show `"passed": 8`; the Day 3 report should show `"passed": 10`, `"total": 10`, and `"mode": "mock"`; and the Day 4 output should show `"checks": "passed"`, `"golden_passed": 10`, and a **66.7%** cache hit rate.
 
 The core uses Python's standard library; no extra packages, API keys, or model downloads are required. The exported JSON reports are saved manually from Colab's `murshid_outputs/` folder into the repository's `results/core/` folder.
 
@@ -114,6 +128,10 @@ Open [`homework/day3_errors.ipynb`](homework/day3_errors.ipynb) in a separate Go
 
 The saved output confirms `"checks": "passed"`, three `"expected_rejection": true` entries, and `"corrected_input": "accepted"`. See [the exported report](results/homework/day3_errors_result.json). No extra packages, model download, or API access is needed.
 
+## Day 4 Optional Homework
+
+The separate three-question FLAN-T5 evaluation is **not yet completed**. It will be saved as `homework/day4_evaluation.ipynb` with its actual generated answers, token counts, timing measurements, and manual interpretation once run.
+
 ## Design Notes and Limitations
 
 - **Validation** checks the shape and values of input data; **authorization** checks whether the current user may access a record.
@@ -122,6 +140,7 @@ The saved output confirms `"checks": "passed"`, three `"expected_rejection": tru
 - The Day 2 homework uses hand-written tool-call objects, **not model-selected or provider-native tool calling**.
 - The real-model homework demonstrates generation from model weights, whereas `FakeClient` returns predefined responses.
 - Day 3 guardrails use limited keyword and pattern checks; passing the ten selected mock cases is **not** a general safety or model-quality assessment. The `build_prompt()` helper is educational; the `FakeClient` does not execute its instructions.
+- The cache experiment counts mock-client calls; it does not establish real model latency, API savings, or correctness beyond the tested examples. The USD **$0.0036** request cost in the report is explicitly hypothetical.
 - None of these examples establishes production readiness.
 
 More implementation details are in [`docs/project-notes.md`](docs/project-notes.md).
