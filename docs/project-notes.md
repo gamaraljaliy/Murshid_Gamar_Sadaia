@@ -84,6 +84,8 @@ The `dispatch(call, trusted_user)` function accepts a dictionary with exactly th
 
 The seven saved automated tests cover an owned reference, an unowned reference, a missing reference, a disallowed tool, an extra owner argument, a numeric reference, and a string instead of a call dictionary. The report shows `passed: 7`, `total: 7` and `records_unchanged: true`. Each individual case reports `passed: true`. The notebook uses Python's standard library only.
 
+The seven-case report was exported directly from the notebook's preserved execution output to `results/homework/day2_tools_result.json`. The notebook also has Markdown sections for the objective, setup, execution order, expected outputs, test-case matrix, validation versus authorization, and scope limitations. The three executable cells and their saved results were preserved without code changes.
+
 ## Day 3 homework: deliberate input errors
 
 The optional exercise is separate from the core and saved at `homework/day3_errors.ipynb`. The single executable code cell defines `validate_public_question()`, which raises `ValueError` for a non-string or blank question and for text longer than 500 characters. `run_error_examples()` uses `try` and `except ValueError` to confirm these are deliberate rejections rather than unhandled runtime failures.
@@ -124,7 +126,7 @@ A non-empty generated answer is a successful execution check, not proof of corre
 - **Day 1 homework:** run `homework/day1_real_model.ipynb` top-to-bottom in a separate Colab Python 3 CPU runtime with internet access to download dependencies and model files.
 - **Day 2 homework:** run `homework/day2_tools.ipynb` top-to-bottom in a separate Colab Python 3 CPU runtime. No downloads are required.
 - **Day 3 homework:** run the single code cell in `homework/day3_errors.ipynb` separately; review the three caught errors and corrected input in its output, plus the Markdown explanation.
-- **Saved outputs:** `results/core/baseline_results.json`, `results/core/day2_results.json`, `results/core/day2_validation_results.json`, `results/core/day3_results.json`, and `results/homework/day1_live_demo_result.json`, and `results/homework/day3_errors_result.json`.
+- **Saved outputs:** `results/core/baseline_results.json`, `results/core/day2_results.json`, `results/core/day2_validation_results.json`, `results/core/day3_results.json`, `results/homework/day1_live_demo_result.json`, `results/homework/day2_tools_result.json`, and `results/homework/day3_errors_result.json`.
 
 ## Limitations and next steps
 
