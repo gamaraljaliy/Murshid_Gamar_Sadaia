@@ -42,7 +42,7 @@ The five recorded case codes are `under_review`, `needs_clarification`, `not_fou
 
 **Testing improvement:** An extra negative check was added to the Day 2 core notebook to reject a ticket whose `needs_clarification` value is the string `'False'` rather than a Boolean. The saved output reports `Extra validation test: passed`, with zero status-tool calls for the invalid ticket. The main five-case tests remain unchanged.
 
-**Notebook execution metadata:** The current GitHub-saved core notebook includes execution counts and saved outputs for Days 1–3. In a fresh runtime, rerun all cells in order.
+**Notebook layout and execution:** The cumulative core now has exactly **14 code cells**: Day 1 (1–3), Day 2 (4–6), Day 3 (7–10), and Day 4 (11–14). The additional Day 3 boundary and instruction-override checks are grouped inside Cell 10, preserving the instructor's cell map. Saved outputs are included for Days 1–4; a full replay from the top was checked after reorganizing.
 
 **Eight-case extension:** The same Day 2 core notebook includes a synthetic validation dataset of eight cases, including accepted tickets, incorrect Boolean types, invalid city/reference, extra or missing fields, and consistent/inconsistent clarification flags. Each case compares its returned code and tool count with an expected value. The saved report at `results/core/day2_validation_results.json` confirms **8/8 passed** and unchanged records.
 
