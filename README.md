@@ -43,6 +43,18 @@ flowchart TD
 
 The cache is limited to two exact, public FAQ questions. **Application-status requests are never stored in the shared cache**, and record ownership is checked before returning a status. The optional real-model homework is separate from this mock workflow.
 
+## Example Requests
+
+The following are classroom examples using the fictional `demo-user-1` session.
+
+| Input | Expected behavior |
+| --- | --- |
+| `كيف أتابع طلبي؟` | Returns the fixed Arabic service-directory answer |
+| `ما حالة طلبي REF-1001 في الرياض؟` | Returns `Application status: under_review` |
+| `أريد حالة طلبي` | Asks `ما رقم مرجع الطلب؟` without calling the status tool |
+| `ما حالة REF-1002؟` | Refuses to reveal another user's status |
+| Repeat `How can I check my application status?` three times | One mock call; cache-hit sequence `false, true, true` |
+
 ## What I Built
 
 | Day | Focus | Implementation |
